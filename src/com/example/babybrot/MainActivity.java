@@ -13,20 +13,29 @@ import com.googlecode.androidannotations.annotations.ViewById;
 public class MainActivity extends Activity {
 
 	@ViewById
-	PlaneSurfaceView surfaceView;
+	MandelbrotSurfaceView surfaceView;
 	
+	/** 
+	 * Necessarily the {@literal @}{@link NonConfigurationInstance}
+	 * requires the field to pertain to a {@literal @}{@link EActivity}
+	 * annotated class. */
 	@NonConfigurationInstance
 	@Bean
-	BackGroundColoring bgColoring;
+	PaintWorker paintWorker;
 
 
+	/**
+	 * The SurfaceView object must know paintWorker is responsible to
+	 * paint its canvas.
+	 */
 	@AfterViews
-	void startSV(){
+	void surfaceViewPaintWorkerInstall(){
+		surfaceView.setPaintWorker(paintWorker);
 	}
 	
 	@Click
 	void surfaceViewClicked(){
-		bgColoring.mbColor(surfaceView);
+		surfaceView.test();
 	}
 
 	
