@@ -91,9 +91,12 @@ public class PaintWorker {
 		}
 
 		//hslToRgb(0.5f,1f,0.5f,paint);
-
+		double wl;
 		//if (iteration>4) iteration =4;
-		double wl = (((double)iteration)/1000)*(780-380)+380;
+		if(iteration>=1000)
+			wl=781;
+		else
+			wl = (((double)iteration)/1000)*(780-380)+380;
 		//hslToRgb(((float)iteration-1)/23f,1f,0.5f,paint);
 		WlColor c = new WlColor(wl);
 		paint.setColor(Color.argb(255, c.getRed(), c.getGreen(), c.getBlue()));
