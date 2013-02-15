@@ -59,8 +59,9 @@ public class MandelbrotSurfaceView extends SurfaceView implements Callback {
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
             int height) {
 		pixelSize = gcd(width, height);
-		if (pixelSize%2==0)
-			pixelSize/=2;
+		/*if (pixelSize%2==0)
+			pixelSize/=4;*/
+		pixelSize=1;
 		paintWorker.traverse(this);
 	}
 

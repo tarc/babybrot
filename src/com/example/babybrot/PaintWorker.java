@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
 
+import com.example.babybrot.utils.WlColor;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.RootContext;
@@ -49,8 +50,8 @@ public class PaintWorker {
 							c.drawRect(new Rect(x,y,x+pixelSize,y+pixelSize),paint);
 
 							//float color = scapeTime(xc-wc/2, yc-hc/2, wc, hc);
-							textPaint.setColor(Color.WHITE);
-							c.drawText(/*""+(xc-wc/2)+","+(yc-hc/2)+*/""+color,x,y+13,textPaint);
+							//textPaint.setColor(Color.WHITE);
+							//c.drawText(/*""+(xc-wc/2)+","+(yc-hc/2)+*/""+color,x,y+13,textPaint);
 							count++;
 						}
 										
@@ -92,7 +93,10 @@ public class PaintWorker {
 		//hslToRgb(0.5f,1f,0.5f,paint);
 
 		//if (iteration>4) iteration =4;
-		hslToRgb(((float)iteration-1)/23f,1f,0.5f,paint);
+		double wl = (((double)iteration)/1000)*(780-380)+380;
+		//hslToRgb(((float)iteration-1)/23f,1f,0.5f,paint);
+		WlColor c = new WlColor(wl);
+		paint.setColor(Color.argb(255, c.getRed(), c.getGreen(), c.getBlue()));
 
 		return iteration;
 	}
