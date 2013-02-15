@@ -18,7 +18,8 @@ public class PaintWorker {
 	@RootContext
 	MainActivity context;
 	
-	
+	final int MAX_ITERATION = 100; //For scape time algorithm
+
 	@Background
 	void traverse(MandelbrotSurfaceView surfaceView){
 		if(surfaceView.isActive()){
@@ -78,9 +79,8 @@ public class PaintWorker {
 		float y = 0;
 
 		int iteration = 0;
-		int max_iteration = 1000;
 
-		while ( x*x + y*y < 2*2 & iteration < max_iteration ){
+		while ( x*x + y*y < 2*2 & iteration < MAX_ITERATION ){
 			float xtemp = x*x - y*y + x0;
 			
 			y = 2*x*y + y0;
@@ -93,10 +93,10 @@ public class PaintWorker {
 		//hslToRgb(0.5f,1f,0.5f,paint);
 		double wl;
 		//if (iteration>4) iteration =4;
-		if(iteration>=1000)
+		if(iteration>=MAX_ITERATION)
 			wl=781;
 		else
-			wl = (((double)iteration)/1000)*(780-380)+380;
+			wl = (((double)iteration)/MAX_ITERATION)*(780-380)+380;
 		//hslToRgb(((float)iteration-1)/23f,1f,0.5f,paint);
 		WlColor c = new WlColor(wl);
 		paint.setColor(Color.argb(255, c.getRed(), c.getGreen(), c.getBlue()));
