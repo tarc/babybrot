@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.util.Log;
 
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EBean;
@@ -114,42 +113,13 @@ public class PaintWorker {
 	}
 	
 
-    private float hue2rgb(float p, float q, float t){
-        if(t < 0) t += 1;
-        if(t > 1) t -= 1;
-        if(t < 1f/6f) return p + (q - p) * 6 * t;
-        if(t < 1f/2f) return q;
-        if(t < 2f/3f) return p + (q - p) * (2f/3f - t) * 6;
-        return p;
-    }
-
-	private void hslToRgb(float h, float s, float l, Paint paint){
-	    float r, g, b;
-	    
-	    if(s == 0){
-	        r = g = b = l; // achromatic
-	    }else{
-
-	        float q = l < 0.5f ? l * (1f + s) : l + s - l * s;
-	        float p = 2 * l - q;
-	        r = hue2rgb(p, q, h + 1f/3f);
-	        g = hue2rgb(p, q, h);
-	        b = hue2rgb(p, q, h - 1f/3f);
-	    }
-
-
-	    
-	    //paint.setARGB(255, (int) r*255, (int) g*255, (int) b*255);
-	    //paint.setARGB(255, 0,0,0);
-	    Log.d(PaintWorker.class.getName(),""+(int) r*255+","+(int) g*255+","+(int) b*255);
-	    paint.setColor(Color.argb(255, (int) r*255, (int) g*255, (int) b*255));
-	}
+ 
 	
 	static private double Gamma = 0.80;
 	static private double IntensityMax = 255;
 	
 	/** Taken from Earl F. Glynn's web page:
-	 * <a href="http://www.efg2.com/Lab/ScienceAndEngineering/Spectra.htm">Spectra Lab Report<a/>
+	 * <a href="http://www.efg2.com/Lab/ScienceAndEngineering/Spectra.htm">Spectra Lab Report</a>
 	 * */
 	public static int[] waveLengthToRGB(double Wavelength){
 		double factor;
