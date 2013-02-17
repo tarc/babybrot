@@ -1,6 +1,7 @@
 package com.example.babybrot;
 
 import android.app.Activity;
+import android.widget.ProgressBar;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Bean;
@@ -9,11 +10,18 @@ import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.NonConfigurationInstance;
 import com.googlecode.androidannotations.annotations.ViewById;
 
-@EActivity(R.layout.activity_main)
+@EActivity(R.layout.babybrot)
 public class Babybrot extends Activity {
 
 	@ViewById
 	MandelbrotSurfaceView surfaceView;
+	
+	@ViewById
+	ProgressBar progressBar;
+	
+	void incrementProgressBy(int delta){
+		progressBar.incrementProgressBy(delta);
+	}
 	
 	/** 
 	 * Necessarily the {@literal @}{@link NonConfigurationInstance}
@@ -31,6 +39,7 @@ public class Babybrot extends Activity {
 	@AfterViews
 	void surfaceViewPaintWorkerInstall(){
 		surfaceView.setPaintWorker(paintWorker);
+		surfaceView.progressBar = progressBar;
 	}
 	
 	@Click

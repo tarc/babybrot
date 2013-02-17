@@ -3,16 +3,22 @@ package com.example.babybrot;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.widget.ProgressBar;
 
+import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EView;
 import com.googlecode.androidannotations.annotations.UiThread;
+import com.googlecode.androidannotations.annotations.ViewById;
 
 @EView
 public class MandelbrotSurfaceView extends SurfaceView implements Callback {
 
+	ProgressBar progressBar;
+	
 	private int pixelSize;
 	public int getPixelSize() {
 		return pixelSize;
@@ -62,7 +68,13 @@ public class MandelbrotSurfaceView extends SurfaceView implements Callback {
 		/*if (pixelSize%2==0)
 			pixelSize/=4;*/
 		pixelSize=1;
+		zeroProgress();
 		paintWorker.traverse(this);
+	}
+	
+	@UiThread
+	void zeroProgress(){
+		progressBar.setProgress(0);
 	}
 
 	@Override

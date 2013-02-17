@@ -7,10 +7,10 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
 
-import com.example.babybrot.utils.WlColor;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.RootContext;
+import com.googlecode.androidannotations.annotations.UiThread;
 
 @EBean
 public class PaintWorker {
@@ -18,8 +18,13 @@ public class PaintWorker {
 	@RootContext
 	Babybrot context;
 	
-	final int MAX_ITERATION = 100; //For scape time algorithm
+	final int MAX_ITERATION = 50; //For scape time algorithm
 
+	@UiThread
+	void incrementPBar(int delta){
+		context.progressBar.incrementProgressBy(delta);
+	}
+	
 	@Background
 	void traverse(MandelbrotSurfaceView surfaceView){
 		if(surfaceView.isActive()){
@@ -42,6 +47,7 @@ public class PaintWorker {
 					int hc=height/pixelSize;
 					int wc=width/pixelSize;
 
+					int total = height*width/100;
 					int count=0;
 					Paint paint = new Paint();
 					for(int y=0,yc=0;y<height;y+=pixelSize,yc++)
@@ -55,6 +61,8 @@ public class PaintWorker {
 							//textPaint.setColor(Color.WHITE);
 							//c.drawText(/*""+(xc-wc/2)+","+(yc-hc/2)+*/""+color,x,y+13,textPaint);
 							count++;
+							if(count%total==0)
+								incrementPBar(1);
 						}
 										
 					surfaceView.setDonePainting(true);
@@ -99,8 +107,8 @@ public class PaintWorker {
 		else
 			wl = (((double)iteration)/MAX_ITERATION)*(780-380)+380;
 		//hslToRgb(((float)iteration-1)/23f,1f,0.5f,paint);
-		WlColor c = new WlColor(wl);
-		paint.setColor(Color.argb(255, c.getRed(), c.getGreen(), c.getBlue()));
+		int[] rgb = waveLengthToRGB(wl);
+		paint.setColor(Color.argb(255, rgb[0], rgb[1], rgb[2]));
 
 		return iteration;
 	}
@@ -137,6 +145,63 @@ public class PaintWorker {
 	    paint.setColor(Color.argb(255, (int) r*255, (int) g*255, (int) b*255));
 	}
 	
+	static private double Gamma = 0.80;
+	static private double IntensityMax = 255;
 	
-	
+	/** Taken from Earl F. Glynn's web page:
+	 * <a href="http://www.efg2.com/Lab/ScienceAndEngineering/Spectra.htm">Spectra Lab Report<a/>
+	 * */
+	public static int[] waveLengthToRGB(double Wavelength){
+		double factor;
+		double Red,Green,Blue;
+
+		if((Wavelength >= 380) && (Wavelength<=439)){
+			Red = -(Wavelength - 440) / (440 - 380);
+			Green = 0.0;
+			Blue = 1.0;
+		}else if((Wavelength >= 440) && (Wavelength<=489)){
+			Red = 0.0;
+			Green = (Wavelength - 440) / (490 - 440);
+			Blue = 1.0;
+		}else if((Wavelength >= 490) && (Wavelength<=509)){
+			Red = 0.0;
+			Green = 1.0;
+			Blue = -(Wavelength - 510) / (510 - 490);
+		}else if((Wavelength >= 510) && (Wavelength<=579)){
+			Red = (Wavelength - 510) / (580 - 510);
+			Green = 1.0;
+			Blue = 0.0;
+		}else if((Wavelength >= 580) && (Wavelength<=644)){
+			Red = 1.0;
+			Green = -(Wavelength - 645) / (645 - 580);
+			Blue = 0.0;
+		}else if((Wavelength >= 645) && (Wavelength<=780)){
+			Red = 1.0;
+			Green = 0.0;
+			Blue = 0.0;
+		}else{
+			Red = 0.0;
+			Green = 0.0;
+			Blue = 0.0;
+		};
+
+		// Let the intensity fall off near the vision limits
+		
+		if((Wavelength >= 380) && (Wavelength<=419)){
+			factor = 0.3 + 0.7*(Wavelength - 380) / (420 - 380);
+		}else if((Wavelength >= 420) && (Wavelength<=700)){
+			factor = 1.0;
+		}else if((Wavelength >= 701) && (Wavelength<=780)){
+			factor = 0.3 + 0.7*(780 - Wavelength) / (780 - 700);
+		}else{
+			factor = 0.0;
+		};
+		
+		int[] rgb = new int[3];
+		rgb[0] = Red==0.0 ? 0 : (int) Math.round(IntensityMax * Math.pow(Red * factor, Gamma));
+		rgb[1] = Green==0.0 ? 0 : (int) Math.round(IntensityMax * Math.pow(Green * factor, Gamma));
+		rgb[2] = Blue==0.0 ? 0 : (int) Math.round(IntensityMax * Math.pow(Blue * factor, Gamma));
+		
+		return rgb;
+	}
 }
