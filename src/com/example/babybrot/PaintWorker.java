@@ -16,7 +16,7 @@ import com.googlecode.androidannotations.annotations.RootContext;
 public class PaintWorker {
 
 	@RootContext
-	MainActivity context;
+	Babybrot context;
 	
 	final int MAX_ITERATION = 100; //For scape time algorithm
 
@@ -49,6 +49,7 @@ public class PaintWorker {
 							
 							int color = scapeTime(xc-wc/2,yc-hc/2,wc,hc,paint);
 							c.drawRect(new Rect(x,y,x+pixelSize,y+pixelSize),paint);
+							
 
 							//float color = scapeTime(xc-wc/2, yc-hc/2, wc, hc);
 							//textPaint.setColor(Color.WHITE);
